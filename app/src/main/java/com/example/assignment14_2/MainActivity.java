@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     //private static final String UPLOAD_URL = "http://127.0.0.1:8000/api_root/Post/";
     private static final String UPLOAD_URL = "http://10.0.2.2:8000/api_root/Post/";
+    private static final String UPLOAD_URL_PYTHON_ANYWHERE = "http://chococoffee999.pythonanywhere.com/api_root/Post/";
     Uri imageUri = null;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -137,15 +138,16 @@ public class MainActivity extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Authorization", "JWT c0c06532928e0d2374d8e462d3a62cc750edf157");
+                //connection.setRequestProperty("Authorization", "JWT d0ed741045ce342106954398c943fc9d28457246"); // pythonanywhere token
                 connection.setRequestProperty("Content-Type", "application/json");
 
                 JSONObject jsonObject = new JSONObject();
-                //jsonObject.put("author", 1);
+                //jsonObject.put("author", "1"); token을 이용해 작성자를 확인
                 jsonObject.put("title", "안드로이드-REST API 테스트");
                 jsonObject.put("text", "안드로이드로 작성된 REST API 테스트 입력 입니다.");
                 jsonObject.put("created_date", "2024-06-03T18:34:00+09:00");
                 jsonObject.put("published_date", "2024-06-03T18:34:00+09:00");
-                jsonObject.put("image", imageUrl);
+                //jsonObject.put("image", imageUrl);
 
                 outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
                 outputStreamWriter.write(jsonObject.toString());
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
                 connection.connect();
 
-                if (connection.getResponseCode() == 200) {
+                if (connection.getResponseCode() == 200 || connection.getResponseCode() == 201) {
                     Log.e("uploadImage", "Success");
                 }
                 connection.disconnect();
@@ -165,8 +167,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("uploadImage", "Exception in uploadImage: " + e.getMessage());
         }
-
-        Log.e("LogInTask", "Failed to login");
-        throw new Error("failed to login");
+        return "success";
     }
 }
